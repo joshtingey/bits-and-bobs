@@ -2,7 +2,7 @@
 
 # Update packages
 sudo apt update && sudo apt upgrade -y && \
-sudo apt install -y python3 python3-dev python3-pip python3-venv && \
+sudo apt install -y python3 python3-dev python3-pip python3-venv htop && \
 sudo pip3 install flake8 autopep8 pytest
 
 # Install docker ce
@@ -54,4 +54,22 @@ cd && sudo apt install -y tmux fonts-powerline && \
 # Cleaning up
 sudo apt autoremove -y
 sudo apt clean -y
+
+# Install microk8s
+sudo snap install microk8s --classic --channel=1.18/stable && \
+    sudo microk8s status --wait-ready && \
+    sudo snap alias microk8s.kubectl kubectl && \
+    sudo usermod -a -G microk8s josh && sudo chown -f -R josh ~/.kube && \
+    sudo microk8s enable dns storage ingress helm3 && \
+    kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.14.2/cert-manager.crds.yaml && \
+    kubectl create namespace cert-manager && \
+    sudo snap alias microk8s.helm3 helm3 && \
+    helm3 repo add jetstack https://charts.jetstack.io && helm3 repo update && \
+    helm3 install cert-manager jetstack/cert-manager --namespace cert-manager --version v0.14.2 && \
+    microk8s.config
+
+# You can then use that config to reach the cluster remotely
+
+
+
 
