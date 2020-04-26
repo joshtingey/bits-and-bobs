@@ -60,7 +60,7 @@ sudo snap install microk8s --classic --channel=1.18/stable && \
     sudo microk8s status --wait-ready && \
     sudo snap alias microk8s.kubectl kubectl && \
     sudo usermod -a -G microk8s josh && sudo chown -f -R josh ~/.kube && \
-    sudo microk8s enable dns storage ingress helm3 && \
+    sudo microk8s enable dns storage ingress helm3 metrics-server dashboard && \
     kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.14.2/cert-manager.crds.yaml && \
     kubectl create namespace cert-manager && \
     sudo snap alias microk8s.helm3 helm3 && \
@@ -70,6 +70,11 @@ sudo snap install microk8s --classic --channel=1.18/stable && \
 
 # You can then use that config to reach the cluster remotely
 
+# Can access the dashboard with...
+# token=$(microk8s kubectl -n kube-system get secret | grep default-token | cut -d " " -f1)
+# microk8s kubectl -n kube-system describe secret $token
+# microk8s kubectl port-forward -n kube-system service/kubernetes-dashboard 10443:443
+# Go to https://localhost:10443 and use the token
 
 
 
